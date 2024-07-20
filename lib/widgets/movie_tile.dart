@@ -11,12 +11,16 @@ class MovieTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // final movieDetailAsyncValue = ref.watch(movieDetailProvider(movieId));
     return CupertinoButton(
       onPressed: () {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (_) => MovieDetailScreen(movie: movie),
+            builder: (_) => MovieDetailScreen(
+              movieId: movie.id,
+              movie: movie,
+            ),
           ),
         );
       },
@@ -63,6 +67,7 @@ class MovieTile extends StatelessWidget {
                     ),
               ),
             ),
+            const SizedBox(height: 12),
           ],
         ),
       ),

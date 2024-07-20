@@ -12,13 +12,15 @@ class MovieDetailModel {
   });
 
   factory MovieDetailModel.fromJson(Map<String, dynamic> json) {
+    List<String> languages = (json['spoken_languages'] as List?)
+            ?.map((e) => e['english_name'] as String)
+            .toList() ??
+        <String>[];
     return MovieDetailModel(
-      overview: json['overview'],
-      budget: json['budget'],
-      revenue: json['revenue'],
-      spokenLanguages: json['spoken'] == null
-          ? <String>[]
-          : (json['spoken'] as List<String>).map((e) => e).toList(),
-    );
+        overview: json['overview'],
+        budget: json['budget'],
+        revenue: json['revenue'],
+        spokenLanguages:
+            languages.length > 2 ? languages.sublist(0, 2) : languages);
   }
 }

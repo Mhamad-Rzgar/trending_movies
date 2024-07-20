@@ -1,0 +1,33 @@
+
+@host = https://api.themoviedb.org/3
+@accessToken = eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI3YjgyYzEzZmYzNDIwOWUwY2MwMGE1MGMxZTlmMzRlMSIsIm5iZiI6MTcyMTM3NzA2Ni40MTI2NDYsInN1YiI6IjY2OWExZWZiYmNlOTRiNmM3MWIwZjQzMiIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.iktAx4-fog_2psAz-BdiNuob7ZJ_qiHDutsBrl_ZTdI
+@api_key = 7b82c13ff34209e0cc00a50c1e9f34e1
+
+
+
+### List of Trending Movies with ACCESS TOKEN
+GET {{host}}/discover/movie?sort_by=popularity.desc&page=1&include_adult=false
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+
+### List of Trending Movies with API KEY
+GET {{host}}/discover/movie?sort_by=popularity.desc&page=1&include_adult=false&api_key={{api_key}}
+Content-Type: application/json
+
+
+### get movies genre
+get https://api.themoviedb.org/3/genre/movie/list?language=en
+Authorization: Bearer {{accessToken}}
+
+###
+get https://api.themoviedb.org/3/movie/1022789
+Authorization: Bearer {{accessToken}}
+
+
+### poster image
+@poster_path=7U2m2dMSIfHx2gWXKq78Xj1weuH.jpg
+
+GET https://image.tmdb.org/t/p/w500/{{poster_path}}
+
+

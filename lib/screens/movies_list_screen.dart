@@ -29,7 +29,6 @@ class MoviesListScreenState extends ConsumerState<MoviesListScreen> {
     _scrollController.addListener(_onScroll);
   }
 
-  // TODO:
   @override
   void dispose() {
     _searchController.removeListener(_onSearchChanged);
