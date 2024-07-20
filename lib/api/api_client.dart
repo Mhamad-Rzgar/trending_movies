@@ -4,7 +4,9 @@ import 'package:trending_movies/constants/constants.test.dart';
 import 'package:trending_movies/constants/end_points.dart';
 
 class ApiClient {
-  // choosing access token Authorization as recommended by API provider instead of API_KEY.
+  //
+  // IMPORTANT NOTE
+  // choosing access token Authorization as RECOMMENDED by API provider instead of API_KEY.
 
   // API GET call for getting trending movies and return it
   Future<List<dynamic>> fetchTrendingMovies({int page = 1}) async {

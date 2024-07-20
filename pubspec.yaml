@@ -1,5 +1,5 @@
 name: trending_movies
-description: "A new Flutter project."
+description: "A flutter project for trending movies"
 publish_to: 'none'
 version: 0.1.0
 
@@ -7,8 +7,10 @@ environment:
   sdk: '>=3.4.4 <4.0.0'
 
 dependencies:
+  cached_network_image: ^3.3.1
   flutter:
     sdk: flutter
+  flutter_riverpod: ^2.5.1
   http: ^1.2.2
 
 dev_dependencies:
