@@ -11,7 +11,6 @@ class MovieTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // final movieDetailAsyncValue = ref.watch(movieDetailProvider(movieId));
     return CupertinoButton(
       onPressed: () {
         Navigator.push(
