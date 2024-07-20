@@ -1,6 +1,6 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import 'package:trending_movies/constants/constants.test.dart';
+import 'package:trending_movies/constants/constants.dart';
 import 'package:trending_movies/constants/end_points.dart';
 
 class ApiClient {
