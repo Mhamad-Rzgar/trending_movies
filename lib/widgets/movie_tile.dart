@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:trending_movies/screens/movie_detail_screen.dart';
 import '../models/movie_model.dart';
 
 class MovieTile extends StatelessWidget {
@@ -12,7 +13,12 @@ class MovieTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return CupertinoButton(
       onPressed: () {
-        // TODO: move to detail page
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (_) => MovieDetailScreen(movie: movie),
+          ),
+        );
       },
       padding: EdgeInsets.zero,
       child: Card(
