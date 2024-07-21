@@ -1,13 +1,14 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:trending_movies/api/api_client.dart';
+import 'package:trending_movies/models/movie_model.dart';
 import 'package:trending_movies/models/movie_detail_model.dart';
-import '../models/movie_model.dart';
+import 'package:trending_movies/api/api_client.dart';
+import 'package:hive/hive.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
 
 final movieListProvider =
     StateNotifierProvider<MovieListNotifier, AsyncValue<List<MovieModel>>>(
         (ref) {
-  return MovieListNotifier();
+  return MovieListNotifier(ref);
 });
 
 List<MovieModel> parseMovies(List<dynamic> moviesJson) {
@@ -19,46 +20,75 @@ MovieDetailModel parseMovieDetail(Map<String, dynamic> json) {
 }
 
 final movieDetailProvider =
-    FutureProvider.family<MovieDetailModel?, int>((ref, movieId) async {
-  try {
-    final movieDetails = await ApiClient().fetchMovieDetails(movieId);
+    FutureProvider.family<MovieDetailModel, int>((ref, movieId) async {
+  final apiClient = ref.read(apiClientProvider);
 
-    // OPTIMIZATION Note: serialize it in a different thread of CPU
-    return await compute(parseMovieDetail, movieDetails);
-  } catch (error) {
-    rethrow;
+  if (await _hasInternetConnection()) {
+    return await apiClient.fetchMovieDetails(movieId);
+  } else {
+    var movieDetailBox = Hive.box<MovieDetailModel>('movieDetailBox');
+    final cachedMovieDetail = movieDetailBox.get(movieId);
+    if (cachedMovieDetail != null) {
+      return cachedMovieDetail;
+    } else {
+      throw Exception('No cached data available');
+    }
   }
 });
 
 class MovieListNotifier extends StateNotifier<AsyncValue<List<MovieModel>>> {
-  MovieListNotifier() : super(const AsyncValue.loading()) {
+  MovieListNotifier(this.ref) : super(const AsyncValue.loading()) {
     fetchMovies();
   }
 
-  int _currentPage = 1;
-  bool _isLoading = false;
+  final Ref ref;
+  int currentPage = 1;
+  bool _isFetching = false;
 
   Future<void> fetchMovies({bool loadMore = false}) async {
-    if (_isLoading) return;
+    if (_isFetching) return;
 
-    _isLoading = true;
-
-    if (loadMore) {
-      _currentPage++;
-    }
+    _isFetching = true;
 
     try {
-      final newMovies =
-          await ApiClient().fetchTrendingMovies(page: _currentPage);
+      final apiClient = ref.read(apiClientProvider);
+      List<MovieModel> movies;
 
-      // OPTIMIZATION Note: serialize it in a different thread of CPU
-      final newMovieList = await compute(parseMovies, newMovies);
+      if (await _hasInternetConnection()) {
+        final fetchedMovies =
+            await apiClient.fetchTrendingMovies(page: currentPage);
+        movies =
+            loadMore ? [...state.value ?? [], ...fetchedMovies] : fetchedMovies;
 
-      state = AsyncValue.data([...?state.value, ...newMovieList]);
-    } catch (error, stack) {
-      state = AsyncValue.error(error, stack);
+        // Save the fetched movies to Hive
+        var movieBox = Hive.box<MovieModel>('movieBox');
+        for (var movie in fetchedMovies) {
+          movieBox.put(movie.id, movie);
+        }
+
+        if (loadMore) {
+          currentPage++;
+        }
+      } else {
+        var movieBox = Hive.box<MovieModel>('movieBox');
+        movies = movieBox.values.toList();
+      }
+
+      state = AsyncValue.data(movies);
+    } catch (e, stackTrace) {
+      state = AsyncValue.error(e, stackTrace);
     } finally {
-      _isLoading = false;
+      _isFetching = false;
     }
   }
 }
+
+Future<bool> _hasInternetConnection() async {
+  var connectivityResult = await (Connectivity().checkConnectivity());
+  return connectivityResult == ConnectivityResult.mobile ||
+      connectivityResult == ConnectivityResult.wifi;
+}
+
+final apiClientProvider = Provider<ApiClient>((ref) {
+  return ApiClient();
+});

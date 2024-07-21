@@ -1,7 +1,19 @@
+import 'package:hive/hive.dart';
+
+part 'movie_detail_model.g.dart';
+
+@HiveType(typeId: 0)
 class MovieDetailModel {
+  @HiveField(0)
   final String overview;
+
+  @HiveField(1)
   final int? budget;
+
+  @HiveField(2)
   final int? revenue;
+
+  @HiveField(3)
   final List<String> spokenLanguages;
 
   MovieDetailModel({

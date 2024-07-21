@@ -7,8 +7,11 @@ import 'package:trending_movies/models/movie_model.dart';
 import 'package:trending_movies/providers/movie_provider.dart';
 
 class MovieDetailScreen extends ConsumerWidget {
-  const MovieDetailScreen(
-      {super.key, required this.movieId, required this.movie});
+  const MovieDetailScreen({
+    super.key,
+    required this.movieId,
+    required this.movie,
+  });
 
   final int movieId;
   final MovieModel movie;
@@ -36,7 +39,12 @@ class MovieDetailScreen extends ConsumerWidget {
           children: [
             Hero(
               tag: movie.id,
-              child: CachedNetworkImage(imageUrl: movie.imageUrl),
+              child: CachedNetworkImage(
+                imageUrl: movie.imageUrl,
+                fit: BoxFit.cover,
+                width: double.infinity,
+                height: 300,
+              ),
             ),
             const SizedBox(height: 12.0),
             Padding(
@@ -46,10 +54,6 @@ class MovieDetailScreen extends ConsumerWidget {
                 children: [
                   movieDetailAsyncValue.when(
                     data: (providerMovies) {
-                      if (providerMovies == null) {
-                        return Container();
-                      }
-
                       return Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [

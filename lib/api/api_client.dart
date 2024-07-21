@@ -1,7 +1,10 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:hive/hive.dart';
 import 'package:trending_movies/constants/constants.dart';
 import 'package:trending_movies/constants/end_points.dart';
+import 'package:trending_movies/models/movie_model.dart';
+import 'package:trending_movies/models/movie_detail_model.dart';
 
 class ApiClient {
   //
@@ -9,7 +12,7 @@ class ApiClient {
   // choosing access token Authorization as RECOMMENDED by API provider instead of API_KEY.
 
   // API GET call for getting trending movies and return it
-  Future<List<dynamic>> fetchTrendingMovies({int page = 1}) async {
+  Future<List<MovieModel>> fetchTrendingMovies({int page = 1}) async {
     var response = await http.get(
       Uri.parse(
           '${EndPoints.apiBaseUrl}/discover/movie?sort_by=popularity.desc&include_adult=false&page=$page'),
@@ -20,7 +23,16 @@ class ApiClient {
     );
 
     if (response.statusCode == 200) {
-      return json.decode(response.body)['results'];
+      List<MovieModel> movies = (json.decode(response.body)['results'] as List)
+          .map((data) => MovieModel.fromJson(data))
+          .toList();
+
+      var movieBox = Hive.box<MovieModel>('movieBox');
+      for (var movie in movies) {
+        movieBox.put(movie.id, movie);
+      }
+
+      return movies;
     } else {
       // if we face any issue during the API get request throwing an failed Exception.
       throw Exception('Failed to load movies');
@@ -28,7 +40,7 @@ class ApiClient {
   }
 
   // getting movies detail by id of the specific movies.
-  Future<Map<String, dynamic>> fetchMovieDetails(int movieId) async {
+  Future<MovieDetailModel> fetchMovieDetails(int movieId) async {
     var response = await http.get(
       Uri.parse('${EndPoints.apiBaseUrl}/movie/$movieId'),
       headers: {
@@ -38,7 +50,13 @@ class ApiClient {
     );
 
     if (response.statusCode == 200) {
-      return json.decode(response.body);
+      MovieDetailModel movieDetail =
+          MovieDetailModel.fromJson(json.decode(response.body));
+
+      var movieDetailBox = Hive.box<MovieDetailModel>('movieDetailBox');
+      movieDetailBox.put(movieId, movieDetail);
+
+      return movieDetail;
     } else {
       // if we face any issue during the API get request throwing an failed Exception.
       throw Exception('Failed to load movie details');

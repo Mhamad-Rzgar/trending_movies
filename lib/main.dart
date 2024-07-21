@@ -1,8 +1,26 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:hive/hive.dart';
+import 'package:trending_movies/models/movie_detail_model.dart';
+import 'package:trending_movies/models/movie_model.dart';
 import 'package:trending_movies/screens/movies_list_screen.dart';
+import 'package:path_provider/path_provider.dart' as path_provider;
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  // Initialize Hive
+  final appDocumentDir = await path_provider.getApplicationDocumentsDirectory();
+  Hive.init(appDocumentDir.path);
+
+  // Register adapters
+  Hive.registerAdapter(MovieDetailModelAdapter());
+  Hive.registerAdapter(MovieModelAdapter());
+
+  // Open boxes
+  await Hive.openBox<MovieModel>('movieBox');
+  await Hive.openBox<MovieDetailModel>('movieDetailBox');
+
   runApp(
     const ProviderScope(
       child: MainApp(),
