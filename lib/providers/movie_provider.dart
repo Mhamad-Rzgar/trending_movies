@@ -4,11 +4,16 @@ import 'package:trending_movies/models/movie_detail_model.dart';
 import 'package:trending_movies/api/api_client.dart';
 import 'package:hive/hive.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:trending_movies/utils/connectivity_util.dart';
 
 final movieListProvider =
     StateNotifierProvider<MovieListNotifier, AsyncValue<List<MovieModel>>>(
         (ref) {
   return MovieListNotifier(ref);
+});
+
+final apiClientProvider = Provider<ApiClient>((ref) {
+  return ApiClient();
 });
 
 List<MovieModel> parseMovies(List<dynamic> moviesJson) {
@@ -19,11 +24,13 @@ MovieDetailModel parseMovieDetail(Map<String, dynamic> json) {
   return MovieDetailModel.fromJson(json);
 }
 
+final connectivityService = ConnectivityService();
+
 final movieDetailProvider =
     FutureProvider.family<MovieDetailModel, int>((ref, movieId) async {
   final apiClient = ref.read(apiClientProvider);
 
-  if (await _hasInternetConnection()) {
+  if (await connectivityService.hasInternetConnection()) {
     return await apiClient.fetchMovieDetails(movieId);
   } else {
     var movieDetailBox = Hive.box<MovieDetailModel>('movieDetailBox');
@@ -54,7 +61,7 @@ class MovieListNotifier extends StateNotifier<AsyncValue<List<MovieModel>>> {
       final apiClient = ref.read(apiClientProvider);
       List<MovieModel> movies;
 
-      if (await _hasInternetConnection()) {
+      if (await connectivityService.hasInternetConnection()) {
         final fetchedMovies =
             await apiClient.fetchTrendingMovies(page: currentPage);
         movies =
@@ -82,13 +89,3 @@ class MovieListNotifier extends StateNotifier<AsyncValue<List<MovieModel>>> {
     }
   }
 }
-
-Future<bool> _hasInternetConnection() async {
-  var connectivityResult = await (Connectivity().checkConnectivity());
-  return connectivityResult == ConnectivityResult.mobile ||
-      connectivityResult == ConnectivityResult.wifi;
-}
-
-final apiClientProvider = Provider<ApiClient>((ref) {
-  return ApiClient();
-});
