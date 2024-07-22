@@ -28,6 +28,7 @@ void main() async {
   );
 }
 
+/// [MainApp] is the root widget of the application.
 class MainApp extends StatelessWidget {
   const MainApp({super.key});
 
@@ -40,12 +41,14 @@ class MainApp extends StatelessWidget {
     );
   }
 
+  /// Configures the theme for the application.
   ThemeData themeData() {
     return ThemeData(
       primarySwatch: Colors.blue,
       primaryColor: Colors.blue,
-      colorScheme:
-          ColorScheme.fromSwatch().copyWith(secondary: Colors.blueAccent),
+      colorScheme: ColorScheme.fromSwatch().copyWith(
+        secondary: Colors.blueAccent,
+      ),
       scaffoldBackgroundColor: const Color(0xFFF2F2F7),
       appBarTheme: const AppBarTheme(
         backgroundColor: Colors.white,

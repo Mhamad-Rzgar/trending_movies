@@ -6,12 +6,18 @@ import 'package:trending_movies/constants/end_points.dart';
 import 'package:trending_movies/models/movie_model.dart';
 import 'package:trending_movies/models/movie_detail_model.dart';
 
+/// [ApiClient] handles API interactions for fetching trending movies
+/// and movie details.
 class ApiClient {
-  //
-  // IMPORTANT NOTE
-  // choosing access token Authorization as RECOMMENDED by API provider instead of API_KEY.
+  /// Note: Using access token for Authorization as recommended by the API provider instead of API_KEY.
 
-  // API GET call for getting trending movies and return it
+  /// Fetches a list of trending movies from the API.
+  ///
+  /// [page] specifies the page number for pagination. Defaults to 1.
+  ///
+  /// Returns a [Future] containing a list of [MovieModel].
+  ///
+  /// Throws an [Exception] if the API call fails.
   Future<List<MovieModel>> fetchTrendingMovies({int page = 1}) async {
     var response = await http.get(
       Uri.parse(
@@ -39,7 +45,11 @@ class ApiClient {
     }
   }
 
-  // getting movies detail by id of the specific movies.
+  /// Fetches the details of a specific movie by its [movieId].
+  ///
+  /// Returns a [Future] containing a [MovieDetailModel].
+  ///
+  /// Throws an [Exception] if the API call fails.
   Future<MovieDetailModel> fetchMovieDetails(int movieId) async {
     var response = await http.get(
       Uri.parse('${EndPoints.apiBaseUrl}/movie/$movieId'),

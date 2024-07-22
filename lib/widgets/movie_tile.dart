@@ -4,9 +4,15 @@ import 'package:flutter/material.dart';
 import 'package:trending_movies/screens/movie_detail_screen.dart';
 import '../models/movie_model.dart';
 
+/// [MovieTile] is a stateless widget that represents a single movie item.
+///
+/// It displays the movie's poster image, title, and release year.
+/// When tapped, it navigates to the movie detail screen.
 class MovieTile extends StatelessWidget {
+  /// The [MovieModel] instance representing the movie.
   final MovieModel movie;
 
+  /// Constructor for creating a [MovieTile] instance.
   const MovieTile({super.key, required this.movie});
 
   @override
