@@ -3,7 +3,6 @@ import 'package:trending_movies/models/movie_model.dart';
 import 'package:trending_movies/models/movie_detail_model.dart';
 import 'package:trending_movies/api/api_client.dart';
 import 'package:hive/hive.dart';
-import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:trending_movies/utils/connectivity_util.dart';
 
 final movieListProvider =

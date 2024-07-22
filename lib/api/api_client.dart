@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'package:hive/hive.dart';
 import 'package:trending_movies/constants/constants.dart';
@@ -29,9 +30,8 @@ class ApiClient {
     );
 
     if (response.statusCode == 200) {
-      List<MovieModel> movies = (json.decode(response.body)['results'] as List)
-          .map((data) => MovieModel.fromJson(data))
-          .toList();
+      // Step 2: Use compute to run the parsing in the background
+      List<MovieModel> movies = await compute(parseMovies, response.body);
 
       var movieBox = Hive.box<MovieModel>('movieBox');
       for (var movie in movies) {
@@ -61,7 +61,7 @@ class ApiClient {
 
     if (response.statusCode == 200) {
       MovieDetailModel movieDetail =
-          MovieDetailModel.fromJson(json.decode(response.body));
+          await compute(parseMovieDetail, response.body);
 
       var movieDetailBox = Hive.box<MovieDetailModel>('movieDetailBox');
       movieDetailBox.put(movieId, movieDetail);
@@ -71,5 +71,15 @@ class ApiClient {
       // if we face any issue during the API get request throwing an failed Exception.
       throw Exception('Failed to load movie details');
     }
+  }
+
+  MovieDetailModel parseMovieDetail(String responseBody) {
+    final parsed = json.decode(responseBody);
+    return MovieDetailModel.fromJson(parsed);
+  }
+
+  List<MovieModel> parseMovies(String responseBody) {
+    final parsed = json.decode(responseBody)['results'] as List;
+    return parsed.map<MovieModel>((data) => MovieModel.fromJson(data)).toList();
   }
 }
