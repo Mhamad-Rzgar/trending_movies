@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'package:hive/hive.dart';
@@ -6,6 +5,7 @@ import 'package:trending_movies/constants/constants.dart';
 import 'package:trending_movies/constants/end_points.dart';
 import 'package:trending_movies/models/movie_model.dart';
 import 'package:trending_movies/models/movie_detail_model.dart';
+import 'package:trending_movies/utils/json_parsing_utils.dart';
 
 /// [ApiClient] handles API interactions for fetching trending movies
 /// and movie details.
@@ -72,25 +72,5 @@ class ApiClient {
       // if we face any issue during the API get request throwing an failed Exception.
       throw Exception('Failed to load movie details');
     }
-  }
-
-  /// Parses the movie detail JSON response in a background isolate.
-  ///
-  /// [responseBody] is the raw JSON response as a [String].
-  ///
-  /// Returns a [MovieDetailModel] parsed from the JSON.
-  MovieDetailModel parseMovieDetail(String responseBody) {
-    final parsed = json.decode(responseBody);
-    return MovieDetailModel.fromJson(parsed);
-  }
-
-  /// Parses the movies JSON response in a background isolate.
-  ///
-  /// [responseBody] is the raw JSON response as a [String].
-  ///
-  /// Returns a list of [MovieModel] parsed from the JSON.
-  List<MovieModel> parseMovies(String responseBody) {
-    final parsed = json.decode(responseBody)['results'] as List;
-    return parsed.map<MovieModel>((data) => MovieModel.fromJson(data)).toList();
   }
 }

@@ -1,1 +1,0 @@
-// Abstracts network requests handling
