@@ -6,6 +6,7 @@ import '../providers/movie_provider.dart';
 import '../widgets/movie_tile.dart';
 import '../models/movie_model.dart';
 
+/// [MoviesListScreen] displays a list of trending movies and provides search functionality.
 class MoviesListScreen extends ConsumerStatefulWidget {
   const MoviesListScreen({super.key});
 
@@ -13,13 +14,14 @@ class MoviesListScreen extends ConsumerStatefulWidget {
   MoviesListScreenState createState() => MoviesListScreenState();
 }
 
+/// [MoviesListScreenState] manages the state for [MoviesListScreen].
 class MoviesListScreenState extends ConsumerState<MoviesListScreen> {
   final TextEditingController _searchController = TextEditingController();
   final ScrollController _scrollController = ScrollController();
   List<MovieModel> _allMovies = [];
   bool _isFetchingMore = false;
 
-  // this will used for debouncing
+  // Timer used for debouncing the search input.
   Timer? _timer;
 
   @override
@@ -39,6 +41,7 @@ class MoviesListScreenState extends ConsumerState<MoviesListScreen> {
     super.dispose();
   }
 
+  /// Handles changes to the search input with debouncing.
   void _onSearchChanged() {
     if (_timer != null) {
       _timer!.cancel();
@@ -48,6 +51,7 @@ class MoviesListScreenState extends ConsumerState<MoviesListScreen> {
     });
   }
 
+  /// Handles scroll events to fetch more movies when reaching the end of the list.
   void _onScroll() {
     if (_scrollController.position.pixels >=
             _scrollController.position.maxScrollExtent * 0.95 &&
@@ -138,6 +142,7 @@ class MoviesListScreenState extends ConsumerState<MoviesListScreen> {
     );
   }
 
+  /// Builds the app bar with a search field.
   AppBar _appBar() {
     return AppBar(
       surfaceTintColor: Colors.transparent,

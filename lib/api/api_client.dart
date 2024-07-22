@@ -60,6 +60,7 @@ class ApiClient {
     );
 
     if (response.statusCode == 200) {
+      // Use compute to run the parsing in the background
       MovieDetailModel movieDetail =
           await compute(parseMovieDetail, response.body);
 
@@ -73,11 +74,21 @@ class ApiClient {
     }
   }
 
+  /// Parses the movie detail JSON response in a background isolate.
+  ///
+  /// [responseBody] is the raw JSON response as a [String].
+  ///
+  /// Returns a [MovieDetailModel] parsed from the JSON.
   MovieDetailModel parseMovieDetail(String responseBody) {
     final parsed = json.decode(responseBody);
     return MovieDetailModel.fromJson(parsed);
   }
 
+  /// Parses the movies JSON response in a background isolate.
+  ///
+  /// [responseBody] is the raw JSON response as a [String].
+  ///
+  /// Returns a list of [MovieModel] parsed from the JSON.
   List<MovieModel> parseMovies(String responseBody) {
     final parsed = json.decode(responseBody)['results'] as List;
     return parsed.map<MovieModel>((data) => MovieModel.fromJson(data)).toList();

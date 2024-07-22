@@ -2,10 +2,12 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:intl/intl.dart';
 import 'package:trending_movies/models/movie_model.dart';
 import 'package:trending_movies/providers/movie_provider.dart';
+import 'package:trending_movies/utils/format_utils.dart';
 
+/// [MovieDetailScreen] displays detailed information about a selected movie.
+/// It uses Riverpod for state management and fetching movie details.
 class MovieDetailScreen extends ConsumerWidget {
   const MovieDetailScreen({
     super.key,
@@ -13,16 +15,15 @@ class MovieDetailScreen extends ConsumerWidget {
     required this.movie,
   });
 
+  /// The ID of the movie to fetch details for.
   final int movieId;
-  final MovieModel movie;
 
-  String formatCurrency(int? amount) {
-    final formatter = NumberFormat.simpleCurrency(decimalDigits: 0);
-    return amount != null ? formatter.format(amount) : 'N/A';
-  }
+  /// The [MovieModel] instance containing basic movie information.
+  final MovieModel movie;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    // Watch the movieDetailProvider to get the movie details asynchronously.
     final movieDetailAsyncValue = ref.watch(movieDetailProvider(movieId));
 
     return Scaffold(
@@ -37,6 +38,7 @@ class MovieDetailScreen extends ConsumerWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            // Display movie poster image with a hero animation.
             Hero(
               tag: movie.id,
               child: CachedNetworkImage(
@@ -52,8 +54,10 @@ class MovieDetailScreen extends ConsumerWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  // Handle different states of the movie detail fetch process.
                   movieDetailAsyncValue.when(
                     data: (providerMovies) {
+                      // Display movie details when data is successfully fetched.
                       return Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
@@ -113,9 +117,11 @@ class MovieDetailScreen extends ConsumerWidget {
                         ],
                       );
                     },
+                    // Display a loading indicator while fetching data.
                     loading: () => const Center(
                       child: CupertinoActivityIndicator(),
                     ),
+                    // Display an error message if the fetch process fails.
                     error: (error, stack) => const Center(
                       child: Text('Error loading movie details'),
                     ),

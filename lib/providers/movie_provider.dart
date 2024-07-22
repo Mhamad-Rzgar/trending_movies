@@ -5,26 +5,27 @@ import 'package:trending_movies/api/api_client.dart';
 import 'package:hive/hive.dart';
 import 'package:trending_movies/utils/connectivity_util.dart';
 
+/// [movieListProvider] is a StateNotifierProvider that manages the state
+/// of the list of movies, using [MovieListNotifier] to handle the logic.
 final movieListProvider =
     StateNotifierProvider<MovieListNotifier, AsyncValue<List<MovieModel>>>(
         (ref) {
   return MovieListNotifier(ref);
 });
 
+/// [apiClientProvider] provides an instance of [ApiClient].
 final apiClientProvider = Provider<ApiClient>((ref) {
   return ApiClient();
 });
 
-List<MovieModel> parseMovies(List<dynamic> moviesJson) {
-  return moviesJson.map((movie) => MovieModel.fromJson(movie)).toList();
-}
-
-MovieDetailModel parseMovieDetail(Map<String, dynamic> json) {
-  return MovieDetailModel.fromJson(json);
-}
-
+/// [connectivityService] is an instance of [ConnectivityService] to check internet connection status.
 final connectivityService = ConnectivityService();
 
+/// [movieDetailProvider] is a FutureProvider family that fetches movie details
+/// based on the provided [movieId].
+///
+/// Returns a [Future] containing [MovieDetailModel].
+/// If there is no internet connection, it retrieves data from the local Hive database.
 final movieDetailProvider =
     FutureProvider.family<MovieDetailModel, int>((ref, movieId) async {
   final apiClient = ref.read(apiClientProvider);
@@ -42,6 +43,8 @@ final movieDetailProvider =
   }
 });
 
+/// [MovieListNotifier] is a StateNotifier that manages the state of a list of [MovieModel].
+/// It fetches the movies either from the API or from the local Hive database based on the connectivity status.
 class MovieListNotifier extends StateNotifier<AsyncValue<List<MovieModel>>> {
   MovieListNotifier(this.ref) : super(const AsyncValue.loading()) {
     fetchMovies();
@@ -51,6 +54,10 @@ class MovieListNotifier extends StateNotifier<AsyncValue<List<MovieModel>>> {
   int currentPage = 1;
   bool _isFetching = false;
 
+  /// Fetches the list of trending movies.
+  ///
+  /// If [loadMore] is true, it fetches the next page of movies and appends them to the current list.
+  /// Otherwise, it fetches the first page of movies and replaces the current list.
   Future<void> fetchMovies({bool loadMore = false}) async {
     if (_isFetching) return;
 
