@@ -29,7 +29,9 @@ Content-Type: application/json
 get https://api.themoviedb.org/3/movie/1022789
 Authorization: Bearer {{accessToken}}
 
+
 ##########################################################################################################################################
+
 
 ### retrieve poster image
 @poster_path=7U2m2dMSIfHx2gWXKq78Xj1weuH.jpg

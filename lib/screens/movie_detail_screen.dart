@@ -9,14 +9,7 @@ import 'package:trending_movies/utils/format_utils.dart';
 /// [MovieDetailScreen] displays detailed information about a selected movie.
 /// It uses Riverpod for state management and fetching movie details.
 class MovieDetailScreen extends ConsumerWidget {
-  const MovieDetailScreen({
-    super.key,
-    required this.movieId,
-    required this.movie,
-  });
-
-  /// The ID of the movie to fetch details for.
-  final int movieId;
+  const MovieDetailScreen({super.key, required this.movie});
 
   /// The [MovieModel] instance containing basic movie information.
   final MovieModel movie;
@@ -24,7 +17,7 @@ class MovieDetailScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     // Watch the movieDetailProvider to get the movie details asynchronously.
-    final movieDetailAsyncValue = ref.watch(movieDetailProvider(movieId));
+    final movieDetailAsyncValue = ref.watch(movieDetailProvider(movie.id));
 
     return Scaffold(
       appBar: AppBar(

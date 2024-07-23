@@ -22,10 +22,7 @@ class MovieTile extends StatelessWidget {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (_) => MovieDetailScreen(
-              movieId: movie.id,
-              movie: movie,
-            ),
+            builder: (_) => MovieDetailScreen(movie: movie),
           ),
         );
       },
@@ -42,17 +39,15 @@ class MovieTile extends StatelessWidget {
               child: Hero(
                 // Use ID as a tag for simple hero animation
                 tag: movie.id,
-                child: SizedBox(
+                child: CachedNetworkImage(
+                  imageUrl: movie.imageUrl,
                   width: double.infinity,
-                  child: CachedNetworkImage(
-                    imageUrl: movie.imageUrl,
-                    fit: BoxFit.cover,
-                  ),
+                  fit: BoxFit.cover,
                 ),
               ),
             ),
             Padding(
-              padding: const EdgeInsets.all(8.0),
+              padding: const EdgeInsets.all(8.0).copyWith(bottom: 0),
               child: Text(
                 movie.title,
                 style: Theme.of(context).textTheme.labelLarge?.copyWith(
@@ -64,7 +59,8 @@ class MovieTile extends StatelessWidget {
               ),
             ),
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 8),
+              padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 8)
+                  .copyWith(bottom: 12),
               child: Text(
                 movie.releaseDate.split('-')[0],
                 style: Theme.of(context).textTheme.bodyMedium?.copyWith(
@@ -72,7 +68,6 @@ class MovieTile extends StatelessWidget {
                     ),
               ),
             ),
-            const SizedBox(height: 12),
           ],
         ),
       ),
