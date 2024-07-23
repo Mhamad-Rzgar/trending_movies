@@ -1,6 +1,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    
+    <uses-permission android:name="android.permission.INTERNET"/>
     <application
-        android:label="trending_movies"
+        android:label="Trending Movie"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity

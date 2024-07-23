@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "926078154327",
+    "project_id": "trending-movies-1515d",
+    "storage_bucket": "trending-movies-1515d.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:926078154327:android:a2b5777cd2d876a0f4d512",
+        "android_client_info": {
+          "package_name": "com.mhamadRzgar.trendingMovie"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAxUlJq57N2V9ZXNINrga9VPhjl2PzuUdM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
